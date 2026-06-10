@@ -1,0 +1,15 @@
+ALTER TABLE users ADD COLUMN IF NOT EXISTS encrypted_password BYTEA;
+
+-- 2. Шифруем пароли
+UPDATE users 
+SET encrypted_password = pgp_sym_encrypt(
+    password::text,
+    'MasterEncryptionKey2024!',
+    'cipher-algo=aes256'
+);
+
+-- 3. Удаляем открытые пароли
+ALTER TABLE users DROP COLUMN password CASCADE;
+
+-- 4. Переименовываем колонку
+ALTER TABLE users RENAME COLUMN encrypted_password TO password;

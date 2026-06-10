@@ -1,0 +1,11 @@
+
+BEGIN
+    RETURN QUERY
+    SELECT 
+        u.id,
+        u.username::VARCHAR(50),
+        encode(u.password, 'hex')::TEXT,
+        u.created_at
+    FROM users u
+    ORDER BY u.id;
+END;
